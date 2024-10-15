@@ -1,0 +1,182 @@
+import React, { useState } from "react";
+import { View, Text, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, TouchableOpacity, FlatList } from "react-native";
+import Modal from 'react-native-modal'; // react-native-modal 사용
+import { Ionicons } from '@expo/vector-icons'; // 아이콘 사용을 위해 설치 필요
+
+const countries = [
+    {name: "대한민국", code: "+82"},
+    {name: "독일", code: "+49"},
+    {name: "러시아", code: "+7"},
+    {name: "미국", code: "+1"},
+    {name: "브라질", code: "+55"},
+    {name: "영국", code: "+44"},
+    {name: "이탈리아", code: "+39"},
+    {name: "가나", code: "+233"},
+    {name: "가봉", code: "+241"},
+    {name: "감비아", code: "+220"},
+    {name: "가이아나", code: "+592"},
+    {name: "건지", code: "+44"},
+    {name: "과테말라", code: "+502"},
+];
+
+const PhoneNumberInput = () => {
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [countryCode, setCountryCode] = useState("+82");
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
+
+    const selectCountry = (code) => {
+        setCountryCode(code);
+        setModalVisible(false);
+    };
+
+    const filteredCountries = countries.filter((country) =>
+        country.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+                <Text style={styles.title}>휴대폰 번호를 입력해주세요</Text>
+                
+                {/* 휴대폰 번호 입력 */}
+                <View style={styles.inputContainer}>
+                    <Text style={styles.label}>휴대폰 번호</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="'-' 제외한 휴대폰 번호"
+                        keyboardType="phone-pad"
+                        value={phoneNumber}
+                        onChangeText={setPhoneNumber}
+                    />
+                </View>
+
+                {/* 국가 선택 영역 */}
+                <TouchableOpacity style={styles.inputContainer} onPress={() => setModalVisible(true)}>
+                    <Text style={styles.label}>국가</Text>
+                    <View style={styles.touchableInput}>
+                        <Text>{countryCode}</Text>
+                    </View>
+                </TouchableOpacity>
+
+                {/* Modal 컴포넌트 */}
+                <Modal
+                    isVisible={isModalVisible}
+                    onBackdropPress={() => setModalVisible(false)}
+                    style={styles.modal}
+                    swipeDirection="down"
+                    onSwipeComplete={() => setModalVisible(false)}
+                    propagateSwipe={true}
+                >
+                    <View style={styles.modalContent}>
+                        {/* 팝업 상단 */}
+                        <View style={styles.modalHeader}>
+                            <TouchableOpacity onPress={() => setModalVisible(false)}>
+                                <Ionicons name="arrow-back" size={24} color="#ccc" />
+                            </TouchableOpacity>
+                            <Text style={styles.modalTitle}>국가</Text>
+                        </View>
+
+                        {/* 검색창 */}
+                        <TextInput
+                            style={styles.searchInput}
+                            placeholder="검색"
+                            placeholderTextColor="#8E8E90"
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
+                        />
+
+                        {/* 국가 리스트 */}
+                        <FlatList
+                            data={filteredCountries}
+                            keyExtractor={(item, index) => item.code + index}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity onPress={() => selectCountry(item.code)}>
+                                    <View style={styles.countryItem}>
+                                        <Text>{item.name}</Text>
+                                        <Text>{item.code}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                        />
+                    </View>
+                </Modal>
+            </View>
+        </TouchableWithoutFeedback>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: "#fff",
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 20,
+        marginTop: 50,
+    },
+    inputContainer: {
+        marginBottom: 15,
+    },
+    label: {
+        fontSize: 16,
+        marginBottom: 10,
+    },
+    input: {
+        height: 50,
+        borderColor: "#ccc",
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 15,
+    },
+    touchableInput: {
+        height: 50,
+        borderColor: "#ccc",
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 15,
+        justifyContent: 'center',
+    },
+    modal: {
+        justifyContent: 'flex-end',
+        margin: 0,
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        padding: 20,
+        height: '90%', // 팝업 높이 설정
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    modalTitle: {
+        flex: 1,
+        textAlign: 'center',
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+    searchInput: {
+        height: 40,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        marginBottom: 10,
+    },
+    countryItem: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingVertical: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: "#ccc",
+    },
+});
+
+export default PhoneNumberInput;
