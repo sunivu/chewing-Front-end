@@ -1,6 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Login, Signin, LoadingScreen, PhoneNumberInput } from "../screens";
+import { Login, Signin, LoadingScreen, PhoneNumberInput, CertificationNumber, EmailInput } from "../screens";
 import { StackActions } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
@@ -20,6 +20,36 @@ const Auth = () => {
                     title: "휴대폰 번호 입력",
                     headerTitleAlign: 'center',
                     headerBackTitleVisible: false,
+                    headerStyle: {
+                        backgroundColor: 'white',
+                        shadowOpacity: 0,
+                    },
+                }}
+            />
+            <Stack.Screen 
+                name="CertificationNumber" 
+                component={CertificationNumber} 
+                options={{
+                    title: "인증번호 입력",
+                    headerTitleAlign: 'center',
+                    headerBackTitleVisible: false,
+                    headerStyle: {
+                        backgroundColor: 'white',
+                        shadowOpacity: 0,
+                    },
+                }}
+            />
+            <Stack.Screen 
+                name="EmailInput" 
+                component={EmailInput} 
+                options={{
+                    title: "이메일 입력",
+                    headerTitleAlign: 'center',
+                    headerBackTitleVisible: false,
+                    headerStyle: {
+                        backgroundColor: 'white',
+                        shadowOpacity: 0,
+                    },
                 }}
             />
         </Stack.Navigator>

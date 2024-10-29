@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, TouchableOpacity, FlatList } from "react-native";
-import Modal from 'react-native-modal'; // react-native-modal 사용
-import { Ionicons } from '@expo/vector-icons'; // 아이콘 사용을 위해 설치 필요
+import Modal from 'react-native-modal'; 
+import { Ionicons } from '@expo/vector-icons'; 
 
 const countries = [
     {name: "대한민국", code: "+82"},
@@ -19,7 +19,7 @@ const countries = [
     {name: "과테말라", code: "+502"},
 ];
 
-const PhoneNumberInput = () => {
+const PhoneNumberInput = ({navigation}) => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [countryCode, setCountryCode] = useState("+82");
     const [isModalVisible, setModalVisible] = useState(false);
@@ -33,6 +33,7 @@ const PhoneNumberInput = () => {
     const filteredCountries = countries.filter((country) =>
         country.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -48,6 +49,7 @@ const PhoneNumberInput = () => {
                         keyboardType="phone-pad"
                         value={phoneNumber}
                         onChangeText={setPhoneNumber}
+                        maxLength={11}
                     />
                 </View>
 
@@ -72,7 +74,7 @@ const PhoneNumberInput = () => {
                         {/* 팝업 상단 */}
                         <View style={styles.modalHeader}>
                             <TouchableOpacity onPress={() => setModalVisible(false)}>
-                                <Ionicons name="arrow-back" size={24} color="#ccc" />
+                                <Ionicons name="close" size={24} color="#111" />
                             </TouchableOpacity>
                             <Text style={styles.modalTitle}>국가</Text>
                         </View>
@@ -101,6 +103,15 @@ const PhoneNumberInput = () => {
                         />
                     </View>
                 </Modal>
+                {/* 다음 버튼 */}
+                {phoneNumber.length > 10 && (
+                    <TouchableOpacity 
+                        style={styles.nextButton} 
+                        onPress={() => navigation.navigate('CertificationNumber')}
+                    >
+                        <Text style={styles.nextButtonText}>다음</Text>
+                    </TouchableOpacity>
+                )}
             </View>
         </TouchableWithoutFeedback>
     );
@@ -145,7 +156,7 @@ const styles = StyleSheet.create({
         margin: 0,
     },
     modalContent: {
-        backgroundColor: 'white',
+        backgroundColor: '#f4f4f4',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         padding: 20,
@@ -164,11 +175,12 @@ const styles = StyleSheet.create({
     },
     searchInput: {
         height: 40,
+        backgroundColor: '#ececec',
         borderColor: '#ccc',
-        borderWidth: 1,
+        borderWidth: 0,
         borderRadius: 8,
         paddingHorizontal: 10,
-        marginBottom: 10,
+        marginBottom: 50,
     },
     countryItem: {
         flexDirection: "row",
@@ -176,6 +188,22 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         borderBottomWidth: 1,
         borderBottomColor: "#ccc",
+        // borderRadius: 8,
+    },
+    nextButton: {
+        backgroundColor: '#1E90FF',
+        paddingVertical: 15,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 20,
+        position: 'absolute',
+        bottom: 50,
+        left:20,
+        right:20
+    },
+    nextButtonText: {
+        color: '#fff',
+        fontSize: 18,
     },
 });
 
