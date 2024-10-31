@@ -40,7 +40,12 @@ const CertificationNumber = ({navigation}) => {
         Alert.alert(
             "인증이 완료되었습니다.",
             "",
-            [{ text: "확인", onPress: () => console.log("확인 pressed") }]
+            [{  text: "확인", 
+                onPress: () => {
+                    console.log("확인 pressed"); 
+                    navigation.navigate('SignIn_ProfileSetting');
+                } 
+            }]
         );
     };
 

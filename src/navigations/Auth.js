@@ -1,14 +1,13 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Login, Signin, LoadingScreen, PhoneNumberInput, CertificationNumber, EmailInput } from "../screens";
+import { Login, Signin, LoadingScreen, PhoneNumberInput, CertificationNumber, EmailInput, SignIn_ProfileSetting } from "../screens";
 import { StackActions } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 
 const Auth = () => {
     return (
-        <Stack.Navigator initialRouteName="LoadingScreen"
-        >
+        <Stack.Navigator initialRouteName="LoadingScreen">
             <Stack.Screen name="LoadingScreen" component={LoadingScreen} options={{headerShown: false}}/>
             <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
             <Stack.Screen name="Signin" component={Signin} options={{headerShown: false}}/>
@@ -44,6 +43,19 @@ const Auth = () => {
                 component={EmailInput} 
                 options={{
                     title: "이메일 입력",
+                    headerTitleAlign: 'center',
+                    headerBackTitleVisible: false,
+                    headerStyle: {
+                        backgroundColor: 'white',
+                        shadowOpacity: 0,
+                    },
+                }}
+            />
+            <Stack.Screen 
+                name="SignIn_ProfileSetting" 
+                component={SignIn_ProfileSetting} 
+                options={{
+                    title: "프로필 설정",
                     headerTitleAlign: 'center',
                     headerBackTitleVisible: false,
                     headerStyle: {
