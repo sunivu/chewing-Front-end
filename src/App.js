@@ -1,23 +1,25 @@
-import React, { useState } from "react";
+// App.js
+import React from 'react';
 import { StatusBar, View, StyleSheet } from "react-native";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./theme";
 import Navigation from "./navigations";
-import * as SplashScreen from "expo-splash-screen";
-import LoadingScreen from "./screens/LoadingScreen";
-import { Login } from "./screens";
+import { AuthProvider } from './contexts/AuthContext';
+import { enableScreens } from 'react-native-screens';
 
+enableScreens(); // react-native-screens 최적화 활성화
 
 const App = () => {
-
     return (
-        <ThemeProvider theme={theme}>
-            <StatusBar 
-                backgroundColor={theme.background} 
-                barStyle={"dark-content"} 
-            />
-            <Navigation />
-        </ThemeProvider>
+        <AuthProvider>
+            <ThemeProvider theme={theme}>
+                <StatusBar 
+                    backgroundColor={theme.background} 
+                    barStyle={"dark-content"} 
+                />
+                <Navigation />
+            </ThemeProvider>
+        </AuthProvider>
     );
 };
 
