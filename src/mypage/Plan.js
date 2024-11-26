@@ -710,7 +710,7 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   todayBorder: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: '#0F84F4',
     borderRadius: 6,
   },
