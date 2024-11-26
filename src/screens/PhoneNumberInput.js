@@ -1,7 +1,23 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, TouchableOpacity, FlatList } from "react-native";
-import Modal from 'react-native-modal'; 
-import { Ionicons } from '@expo/vector-icons'; 
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    Keyboard,
+    TouchableWithoutFeedback,
+    TouchableOpacity,
+    FlatList,
+    Alert
+}
+from "react-native";
+import Modal from 'react-native-modal';
+import { Ionicons } from '@expo/vector-icons';
+import React, {useState, useRef, useEffect} from "react";
+import LoginApiClient from "../api/LoginApiClient";
+import PhoneNumberViewModel from "../viewmodels/PhoneNumberViewModel";
+import DeviceInfoManager from "../manager/DeviceInfoManager";
+import PhoneNumber from "../models/PhoneNumber";
+
 
 const countries = [
     {name: "대한민국", code: "+82"},
@@ -20,26 +36,70 @@ const countries = [
 ];
 
 const PhoneNumberInput = ({navigation}) => {
+
     const [phoneNumber, setPhoneNumber] = useState("");
     const [countryCode, setCountryCode] = useState("+82");
     const [isModalVisible, setModalVisible] = useState(false);
     const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
+    const [loading, setLoading] = useState(false);
+    const [phoneNumberViewModel, setPhoneNumberViewModel] = useState(null);
+
+
+    useEffect(() => {
+        const initializeViewModel = async () => {
+            try {
+                const deviceInfoManager = await DeviceInfoManager.create();
+                const loginApiClient = new LoginApiClient();
+                const viewModel = new PhoneNumberViewModel(
+                    loginApiClient,
+                    deviceInfoManager
+                );
+                setPhoneNumberViewModel(viewModel);
+            } catch (err) {
+                console.error("Error initializing EmailViewModel:", err);
+            }
+        };
+        initializeViewModel();
+    }, [navigation]);
 
     const selectCountry = (code) => {
         setCountryCode(code);
         setModalVisible(false);
     };
 
+    const handlePhoneNumberChange = (newPhoneNumber) => {
+        setPhoneNumber(newPhoneNumber);
+    };
+
+    const handleNext = async () => {
+        const phoneNumberModel = new PhoneNumber(phoneNumber, countryCode);
+        if (!phoneNumberViewModel.canProceed(phoneNumberModel)) {
+            Alert.alert("유효한 휴대폰을 입력해주세요.");
+            return;
+        }
+        setLoading(true);
+        try {
+            await phoneNumberViewModel.sendPhoneVerification(
+                phoneNumberModel
+            );
+            navigation.navigate('CertificationNumber' , {phoneNumber: phoneNumberModel, phoneNumberViewModel: phoneNumberViewModel});
+        } catch (err) {
+            Alert.alert("오류", phoneNumberViewModel.error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const filteredCountries = countries.filter((country) =>
         country.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    
+
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <Text style={styles.title}>휴대폰 번호를 입력해주세요</Text>
-                
+
                 {/* 휴대폰 번호 입력 */}
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>휴대폰 번호</Text>
@@ -48,7 +108,7 @@ const PhoneNumberInput = ({navigation}) => {
                         placeholder="'-' 제외한 휴대폰 번호"
                         keyboardType="phone-pad"
                         value={phoneNumber}
-                        onChangeText={setPhoneNumber}
+                        onChangeText={handlePhoneNumberChange}
                         maxLength={11}
                     />
                 </View>
@@ -105,11 +165,14 @@ const PhoneNumberInput = ({navigation}) => {
                 </Modal>
                 {/* 다음 버튼 */}
                 {phoneNumber.length > 10 && (
-                    <TouchableOpacity 
-                        style={styles.nextButton} 
-                        onPress={() => navigation.navigate('CertificationNumber')}
+                    <TouchableOpacity
+                        style={styles.nextButton}
+                        onPress={handleNext}
+                        disabled={loading}
                     >
-                        <Text style={styles.nextButtonText}>다음</Text>
+                        <Text style={styles.nextButtonText}>
+                            {loading ? "로딩 중..." : "다음"}
+                        </Text>
                     </TouchableOpacity>
                 )}
             </View>
