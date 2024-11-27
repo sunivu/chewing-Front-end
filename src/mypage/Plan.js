@@ -196,15 +196,29 @@ const Plan = ({ navigation }) => {
     setPickerVisible(false);
   };
 
-
+  /**
+   * 일정을 삭제하는 함수
+   * 선택된 날짜에 해당하는 일정들 중에서
+   * 선택된 일정에 해당하는 일정을 삭제함.
+   */
   const handleDeleteTask = () => {
+    if (!selectedTask || !selectedDate) return;
+
     const dateKey = selectedDate.toLocaleDateString('ko-KR');
     const updatedTasks = { ...tasks };
-    delete updatedTasks[dateKey];
+
+    if (updatedTasks[dateKey]) {
+        updatedTasks[dateKey] = updatedTasks[dateKey].filter(task => task !== selectedTask);
+        if (updatedTasks[dateKey].length === 0) {
+            delete updatedTasks[dateKey];
+        }
+    }
+
     setTasks(updatedTasks);
     setDropdownVisible(false);
     setModalVisible(false);
-  };
+};
+
 
 
 
