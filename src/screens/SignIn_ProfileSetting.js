@@ -7,11 +7,11 @@ import * as ImagePicker from 'expo-image-picker';
 import { AuthContext } from '../contexts/AuthContext';
 
 const SignIn_ProfileSetting = ({ navigation }) => {
-    const { setIsLoggedIn } = useContext(AuthContext);
+    const { setIsLoggedIn, setProfileImage, setFirstName, setLastName } = useContext(AuthContext);
 
-    const [profileImage, setProfileImage] = useState(null);
-    const [lastName, setLastName] = useState("");
-    const [firstName, setFirstName] = useState("");
+    const [localProfileImage, setLocalProfileImage] = useState(null);
+    const [localLastName, setLocalLastName] = useState("");
+    const [localFirstName, setLocalFirstName] = useState("");
     const [year, setYear] = useState("년");
     const [month, setMonth] = useState("월");
     const [day, setDay] = useState("일");
@@ -19,12 +19,12 @@ const SignIn_ProfileSetting = ({ navigation }) => {
     const [visiblePicker, setVisiblePicker] = useState(null);
 
     useEffect(() => {
-        if (profileImage && lastName && firstName && year !== "년" && month !== "월" && day !== "일") {
+        if (localProfileImage && localLastName && localFirstName && year !== "년" && month !== "월" && day !== "일") {
             setIsButtonEnabled(true);
         } else {
             setIsButtonEnabled(false);
         }
-    }, [profileImage, lastName, firstName, year, month, day]);
+    }, [localProfileImage, localLastName, localFirstName, year, month, day]);
 
     const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -41,7 +41,7 @@ const SignIn_ProfileSetting = ({ navigation }) => {
         });
 
         if (!result.canceled) {
-            setProfileImage(result.assets[0].uri);
+            setLocalProfileImage(result.assets[0].uri);
         }
     };
 
@@ -75,6 +75,7 @@ const SignIn_ProfileSetting = ({ navigation }) => {
     );
 
     const handleConfirm = () => {
+
         Alert.alert(
             "프로필 설정이 완료되었습니다.",
             "",
@@ -82,7 +83,9 @@ const SignIn_ProfileSetting = ({ navigation }) => {
                 { 
                     text: "확인",
                     onPress: () => {
-                        // 상태 업데이트 및 네비게이션 초기화
+                        setProfileImage(localProfileImage);
+                        setFirstName(localFirstName);
+                        setLastName(localLastName);
                         setIsLoggedIn(true);
                     }
                 }
@@ -95,8 +98,8 @@ const SignIn_ProfileSetting = ({ navigation }) => {
             <View style={styles.container}>
 
                 <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
-                    {profileImage ? (
-                        <Image source={{ uri: profileImage }} style={styles.profileImage} />
+                    {localProfileImage ? (
+                        <Image source={{ uri: localProfileImage }} style={styles.profileImage} />
                     ) : (
                         <View style={styles.defaultImage}>
                             <Text style={styles.cameraIcon}>📷</Text>
@@ -109,8 +112,8 @@ const SignIn_ProfileSetting = ({ navigation }) => {
                     <TextInput
                         style={styles.input}
                         placeholder="성 입력"
-                        value={lastName}
-                        onChangeText={setLastName}
+                        value={localLastName}
+                        onChangeText={setLocalLastName}
                     />
                 </View>
 
@@ -119,8 +122,8 @@ const SignIn_ProfileSetting = ({ navigation }) => {
                     <TextInput
                         style={styles.input}
                         placeholder="이름 입력"
-                        value={firstName}
-                        onChangeText={setFirstName}
+                        value={localFirstName}
+                        onChangeText={setLocalFirstName}
                     />
                 </View>
 
@@ -154,7 +157,6 @@ const SignIn_ProfileSetting = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    // 기존 스타일 유지
     container: {
         flex: 1,
         padding: 20,
