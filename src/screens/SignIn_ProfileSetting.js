@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { 
+    View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, 
+    TouchableWithoutFeedback, Keyboard, Alert 
+} from "react-native";
 import * as ImagePicker from 'expo-image-picker';
+import { AuthContext } from '../contexts/AuthContext';
 
 const SignIn_ProfileSetting = ({ navigation }) => {
+    const { setIsLoggedIn } = useContext(AuthContext);
+
     const [profileImage, setProfileImage] = useState(null);
     const [lastName, setLastName] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -68,6 +74,22 @@ const SignIn_ProfileSetting = ({ navigation }) => {
         )
     );
 
+    const handleConfirm = () => {
+        Alert.alert(
+            "프로필 설정이 완료되었습니다.",
+            "",
+            [
+                { 
+                    text: "확인",
+                    onPress: () => {
+                        // 상태 업데이트 및 네비게이션 초기화
+                        setIsLoggedIn(true);
+                    }
+                }
+            ]
+        );
+    };
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
@@ -122,17 +144,7 @@ const SignIn_ProfileSetting = ({ navigation }) => {
                 <TouchableOpacity
                     style={[styles.completeButton, isButtonEnabled ? styles.enabledButton : styles.disabledButton]}
                     disabled={!isButtonEnabled}
-                    onPress={() => {
-                       Alert.alert(
-                        "프로필 설정이 완료되었습니다.",
-                        "",
-                        [{ text: "확인",
-                            onPress: () => {
-                                console.log("확인 pressed"); 
-                            }
-                        }]
-                        );
-                    }}
+                    onPress={handleConfirm}
                 >
                     <Text style={styles.completeButtonText}>완료</Text>
                 </TouchableOpacity>
@@ -142,6 +154,7 @@ const SignIn_ProfileSetting = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    // 기존 스타일 유지
     container: {
         flex: 1,
         padding: 20,

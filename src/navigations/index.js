@@ -1,15 +1,13 @@
 import React from "react";
-import { NavigationContainer  } from "@react-navigation/native";
-import Auth from "./Auth";
-// import { Login, Signin, LoadingScreen } from "../screens";
-
+import { NavigationContainer } from "@react-navigation/native";
+import RootNavigator from "./RootNavigator";
 
 const Navigation = () => {
     return (
         <NavigationContainer>
-            <Auth />
+            <RootNavigator />
         </NavigationContainer>
-    )
-}
+    );
+};
 
 export default Navigation;
