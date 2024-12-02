@@ -9,7 +9,17 @@ import HomeScreen from "./HomeScreen";
 import ChatScreen from "./ChatScreen";
 import AddScreen from "./AddScreen";
 import MyPageScreen from "./MyPageScreen";
+import ManagePost from "./ManagePost";
+import HidePost from "./HidePost";
+import Plan from "./Plan";
 import SettingScreen from "./SettingScreen";
+import TermsOfService from "./TermsOfService";
+import NoticeList from "./NoticeList";
+import NoticeScreen from "./NoticeScreen";
+import UserProfile from "./UserProfile";
+import Name from "./Name";
+import Birth from "./Birth";
+import PhoneNumber from "./PhoneNumber";
 
 
 export {
@@ -24,5 +34,15 @@ export {
     ChatScreen,
     AddScreen,
     MyPageScreen,
+    ManagePost,
+    HidePost,
+    Plan,
     SettingScreen,
+    TermsOfService,
+    NoticeList,
+    NoticeScreen,
+    UserProfile,
+    Name,
+    Birth,
+    PhoneNumber
 };

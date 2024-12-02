@@ -13,9 +13,9 @@ const App = () => {
     return (
         <AuthProvider>
             <ThemeProvider theme={theme}>
-                <StatusBar 
-                    backgroundColor={theme.background} 
-                    barStyle={"dark-content"} 
+                <StatusBar
+                    backgroundColor={theme.background}
+                    barStyle={"dark-content"}
                 />
                 <Navigation />
             </ThemeProvider>

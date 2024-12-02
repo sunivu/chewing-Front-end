@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
-import { usePosts } from './context/PostContext';
+import { usePosts } from '../contexts/PostContext';
 
 const HidePost = () => {
     const { hiddenPosts } = usePosts();
