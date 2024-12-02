@@ -1,45 +1,103 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, TouchableOpacity, FlatList } from "react-native";
-import Modal from 'react-native-modal'; 
-import { Ionicons } from '@expo/vector-icons'; 
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    Keyboard,
+    TouchableWithoutFeedback,
+    TouchableOpacity,
+    FlatList,
+    Alert
+}
+from "react-native";
+import Modal from 'react-native-modal';
+import { Ionicons } from '@expo/vector-icons';
+import React, {useState, useRef, useEffect} from "react";
+import LoginApiClient from "../api/LoginApiClient";
+import PhoneNumberViewModel from "../viewmodels/PhoneNumberViewModel";
+import DeviceInfoManager from "../manager/DeviceInfoManager";
+import PhoneNumber from "../models/PhoneNumber";
+
 
 const countries = [
-    {name: "대한민국", code: "+82"},
-    {name: "독일", code: "+49"},
-    {name: "러시아", code: "+7"},
-    {name: "미국", code: "+1"},
-    {name: "브라질", code: "+55"},
-    {name: "영국", code: "+44"},
-    {name: "이탈리아", code: "+39"},
-    {name: "가나", code: "+233"},
-    {name: "가봉", code: "+241"},
-    {name: "감비아", code: "+220"},
-    {name: "가이아나", code: "+592"},
-    {name: "건지", code: "+44"},
-    {name: "과테말라", code: "+502"},
+    { name: "대한민국", code: "+82" },
+    { name: "독일", code: "+49" },
+    { name: "러시아", code: "+7" },
+    { name: "미국", code: "+1" },
+    { name: "브라질", code: "+55" },
+    { name: "영국", code: "+44" },
+    { name: "이탈리아", code: "+39" },
+    { name: "가나", code: "+233" },
+    { name: "가봉", code: "+241" },
+    { name: "감비아", code: "+220" },
+    { name: "가이아나", code: "+592" },
+    { name: "과테말라", code: "+502" },
 ];
 
 const PhoneNumberInput = ({navigation}) => {
+
     const [phoneNumber, setPhoneNumber] = useState("");
     const [countryCode, setCountryCode] = useState("+82");
     const [isModalVisible, setModalVisible] = useState(false);
     const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
+    const [loading, setLoading] = useState(false);
+    const [phoneNumberViewModel, setPhoneNumberViewModel] = useState(null);
+
+
+    useEffect(() => {
+        const initializeViewModel = async () => {
+            try {
+                const deviceInfoManager = await DeviceInfoManager.create();
+                const loginApiClient = new LoginApiClient();
+                const viewModel = new PhoneNumberViewModel(
+                    loginApiClient,
+                    deviceInfoManager
+                );
+                setPhoneNumberViewModel(viewModel);
+            } catch (err) {
+                console.error("Error initializing EmailViewModel:", err);
+            }
+        };
+        initializeViewModel();
+    }, [navigation]);
 
     const selectCountry = (code) => {
         setCountryCode(code);
         setModalVisible(false);
     };
 
+    const handlePhoneNumberChange = (newPhoneNumber) => {
+        setPhoneNumber(newPhoneNumber);
+    };
+
+    const handleNext = async () => {
+        const phoneNumberModel = new PhoneNumber(phoneNumber, countryCode);
+        if (!phoneNumberViewModel.canProceed(phoneNumberModel)) {
+            Alert.alert("유효한 휴대폰을 입력해주세요.");
+            return;
+        }
+        setLoading(true);
+        try {
+            await phoneNumberViewModel.sendPhoneVerification(
+                phoneNumberModel
+            );
+            navigation.navigate('CertificationNumber' , {phoneNumber: phoneNumberModel, phoneNumberViewModel: phoneNumberViewModel});
+        } catch (err) {
+            Alert.alert("오류", phoneNumberViewModel.error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const filteredCountries = countries.filter((country) =>
         country.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <Text style={styles.title}>휴대폰 번호를 입력해주세요</Text>
-                
+
                 {/* 휴대폰 번호 입력 */}
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>휴대폰 번호</Text>
@@ -48,7 +106,7 @@ const PhoneNumberInput = ({navigation}) => {
                         placeholder="'-' 제외한 휴대폰 번호"
                         keyboardType="phone-pad"
                         value={phoneNumber}
-                        onChangeText={setPhoneNumber}
+                        onChangeText={handlePhoneNumberChange}
                         maxLength={11}
                     />
                 </View>
@@ -74,42 +132,50 @@ const PhoneNumberInput = ({navigation}) => {
                         {/* 팝업 상단 */}
                         <View style={styles.modalHeader}>
                             <TouchableOpacity onPress={() => setModalVisible(false)}>
-                                <Ionicons name="close" size={24} color="#111" />
+                                <Ionicons name="close-outline" size={24} color="#111" />
                             </TouchableOpacity>
                             <Text style={styles.modalTitle}>국가</Text>
                         </View>
 
                         {/* 검색창 */}
-                        <TextInput
-                            style={styles.searchInput}
-                            placeholder="검색"
-                            placeholderTextColor="#8E8E90"
-                            value={searchQuery}
-                            onChangeText={setSearchQuery}
-                        />
+                        <View style={styles.searchContainer}>
+                            <Ionicons name="search-outline" size={20} color="#8E8E90" style={styles.searchIcon} />
+                            <TextInput
+                                style={styles.searchInput}
+                                placeholder="검색"
+                                placeholderTextColor="#8E8E90"
+                                value={searchQuery}
+                                onChangeText={setSearchQuery}
+                            />
+                        </View>
 
                         {/* 국가 리스트 */}
                         <FlatList
                             data={filteredCountries}
-                            keyExtractor={(item, index) => item.code + index}
+                            keyExtractor={(item) => item.code}
                             renderItem={({ item }) => (
                                 <TouchableOpacity onPress={() => selectCountry(item.code)}>
                                     <View style={styles.countryItem}>
-                                        <Text>{item.name}</Text>
-                                        <Text>{item.code}</Text>
+                                        <Text style={styles.countryName}>{item.name}</Text>
+                                        <Text style={styles.countryCode}>{item.code}</Text>
                                     </View>
                                 </TouchableOpacity>
                             )}
+                            showsVerticalScrollIndicator={false}
                         />
                     </View>
                 </Modal>
+
                 {/* 다음 버튼 */}
                 {phoneNumber.length > 10 && (
-                    <TouchableOpacity 
-                        style={styles.nextButton} 
-                        onPress={() => navigation.navigate('CertificationNumber')}
-                    >
-                        <Text style={styles.nextButtonText}>다음</Text>
+                    <TouchableOpacity
+                        style={styles.nextButton}
+                        onPress={handleNext}
+                        disabled={loading}
+                   >
+                        <Text style={styles.nextButtonText}>
+                            {loading ? "로딩 중..." : "다음"}
+                        </Text>
                     </TouchableOpacity>
                 )}
             </View>
@@ -156,11 +222,11 @@ const styles = StyleSheet.create({
         margin: 0,
     },
     modalContent: {
-        backgroundColor: '#f4f4f4',
+        backgroundColor: '#fff',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         padding: 20,
-        height: '90%', // 팝업 높이 설정
+        height: '80%', // 팝업 높이 설정
     },
     modalHeader: {
         flexDirection: 'row',
@@ -173,33 +239,48 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
     },
-    searchInput: {
-        height: 40,
-        backgroundColor: '#ececec',
-        borderColor: '#ccc',
-        borderWidth: 0,
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#f4f4f4',
         borderRadius: 8,
         paddingHorizontal: 10,
-        marginBottom: 50,
+        marginBottom: 20,
+    },
+    searchIcon: {
+        marginRight: 10,
+    },
+    searchInput: {
+        flex: 1,
+        height: 40,
+        fontSize: 16,
+        color: '#111',
     },
     countryItem: {
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: "center",
         paddingVertical: 15,
         borderBottomWidth: 1,
-        borderBottomColor: "#ccc",
-        // borderRadius: 8,
+        borderBottomColor: "#f0f0f0",
+    },
+    countryName: {
+        fontSize: 16,
+        color: '#111',
+    },
+    countryCode: {
+        fontSize: 16,
+        color: '#888',
     },
     nextButton: {
         backgroundColor: '#1E90FF',
         paddingVertical: 15,
         borderRadius: 8,
         alignItems: 'center',
-        marginTop: 20,
         position: 'absolute',
         bottom: 50,
-        left:20,
-        right:20
+        left: 20,
+        right: 20,
     },
     nextButtonText: {
         color: '#fff',
