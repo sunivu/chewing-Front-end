@@ -1,7 +1,7 @@
 import React, { useState, useLayoutEffect } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { usePosts } from './context/PostContext';
+import { usePosts } from '../contexts/PostContext';
 
 const ManagePost = ({ navigation }) => {
     const { posts, hidePosts, deletePosts} = usePosts();
