@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { MyPageScreen, ManagePost, Plan, ProfileEdit, HidePost } from '../mypage';
-import { PostProvider } from '../mypage/context/PostContext';
+import { MyPageScreen, ManagePost, Plan, HidePost } from '../screens';
+import { PostProvider } from '../contexts/PostContext';
 
 const Stack = createStackNavigator();
 
@@ -23,13 +23,6 @@ const MyPage = () => {
                     options={{
                         title: '내 게시물',
                         headerTitleAlign: 'center',
-                        headerBackTitleVisible: false,
-                    }}
-                />
-                <Stack.Screen
-                    name="ProfileEdit"
-                    component={ProfileEdit}
-                    options={{
                         headerBackTitleVisible: false,
                     }}
                 />

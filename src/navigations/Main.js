@@ -3,8 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import ChatScreen from '../screens/ChatScreen';
 import AddScreen from '../screens/AddScreen';
-import MyPageScreen from '../screens/MyPageScreen';
-import SettingScreen from '../screens/SettingScreen';
+import MyPage from './Mypage';
+import Setting from './Setting';
 import { Image } from 'react-native';
 
 const Tab = createBottomTabNavigator();
@@ -70,8 +70,8 @@ const Main = () => {
             <Tab.Screen name="Home" component={HomeScreen} />
             <Tab.Screen name="Chat" component={ChatScreen} />
             <Tab.Screen name="Add" component={AddScreen} />
-            <Tab.Screen name="MyPage" component={MyPageScreen} />
-            <Tab.Screen name="Setting" component={SettingScreen} />
+            <Tab.Screen name="MyPage" component={MyPage} />
+            <Tab.Screen name="Setting" component={Setting} />
         </Tab.Navigator>
     );
 };
