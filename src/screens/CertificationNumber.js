@@ -1,11 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Keyboard ,TouchableWithoutFeedback, Alert} from "react-native";
+import React, {useState, useEffect, useContext} from "react";
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    TouchableOpacity,
+    Keyboard,
+    TouchableWithoutFeedback,
+    Alert
+} from "react-native";
+import {AccessStatus} from "../models/AccessStatus";
+import {AuthContext} from "../contexts/AuthContext";
 
 
-const CertificationNumber = ({navigation}) => {
+const CertificationNumber = ({route, navigation}) => {
+    const { setIsLoggedIn } = useContext(AuthContext);
     const [certificationNumber, setCertificationNumber] = useState("");
     const [timer, setTimer] = useState(180);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+    const {phoneNumber, phoneNumberViewModel, email, emailViewModel} = route.params || {};
 
     useEffect(() => {
         if (certificationNumber.length === 6 && timer > 0) {
@@ -31,29 +44,61 @@ const CertificationNumber = ({navigation}) => {
         return `${minutes}:${seconds}`;
     };
 
-    const handleResend = () => {
+    const handleResend =  async () => {
+        if (phoneNumber && phoneNumberViewModel) {
+            await phoneNumberViewModel.sendPhoneVerification(phoneNumber);
+        }
+        if (email && emailViewModel) {
+            await emailViewModel.sendEmailVerification(email);
+        }
         setTimer(180); // 타이머를 3분으로 초기화
         setCertificationNumber(""); // 입력 초기화
     };
 
-    const handleComplete = () => {
-        Alert.alert(
-            "인증이 완료되었습니다.",
-            "",
-            [{  text: "확인", 
-                onPress: () => {
-                    console.log("확인 pressed"); 
-                    navigation.navigate('SignIn_ProfileSetting');
-                } 
-            }]
-        );
+    const handleComplete =async ()  => {
+        if (phoneNumber && phoneNumberViewModel) {
+            const accessStatus= await phoneNumberViewModel.verifyPhoneNumber(phoneNumber,certificationNumber);
+            Alert.alert(
+                "인증이 완료되었습니다.",
+                "",
+                [{
+                    text: "확인",
+                    onPress: () => {
+                        console.log("확인 pressed");
+                        if (accessStatus === AccessStatus.ACCESS) {
+                            setIsLoggedIn(true);
+                        } else {
+                            navigation.navigate('SignIn_ProfileSetting');
+                        }
+                    }
+                }]
+            );
+        }
+        if (email && emailViewModel) {
+            const accessStatus = await emailViewModel.verifyEmail(email,certificationNumber);
+            Alert.alert(
+                "인증이 완료되었습니다.",
+                "",
+                [{
+                    text: "확인",
+                    onPress: () => {
+                        console.log("확인 pressed");
+                        if (accessStatus === AccessStatus.ACCESS) {
+                            setIsLoggedIn(true);
+                        } else {
+                            navigation.navigate('SignIn_ProfileSetting');
+                        }
+                    }
+                }]
+            );
+        }
     };
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
                 <Text style={styles.title}>인증번호를 입력해주세요</Text>
-                
+
                 {/* 인증번호 입력 */}
                 <View style={styles.inputContainer}>
                     <Text style={styles.label}>인증번호</Text>
@@ -77,8 +122,8 @@ const CertificationNumber = ({navigation}) => {
                 </Text>
 
                 {/* 완료 버튼 */}
-                <TouchableOpacity 
-                    style={[styles.completeButton, isButtonEnabled ? styles.enabledButton : styles.disabledButton]} 
+                <TouchableOpacity
+                    style={[styles.completeButton, isButtonEnabled ? styles.enabledButton : styles.disabledButton]}
                     disabled={!isButtonEnabled}
                     onPress={handleComplete}
                 >
