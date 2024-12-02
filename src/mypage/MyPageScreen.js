@@ -1,13 +1,20 @@
+<<<<<<< HEAD
 import { React, useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import { usePosts } from './context/PostContext';
+=======
+import { React, useState } from 'react';
+import { View, Text, Image, Button, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { Avatar, Icon } from 'react-native-elements';
+>>>>>>> 9312a88 (마이페이지 화면 구현)
 import * as ImagePicker from 'expo-image-picker';
 import CalendarIcon from '../../assets/calendar.svg';
 import MenuIcon from '../../assets/menu.svg';
 import EditIcon from '../../assets/edit.svg';
 
 const MyPageScreen = ({ navigation }) => {
+<<<<<<< HEAD
   const { posts, hiddenPosts, hidePosts, deletePosts, deletedPosts } = usePosts();
   const context = usePosts();
   const [profileImage, setProfileImage] = useState(null);
@@ -22,6 +29,12 @@ const MyPageScreen = ({ navigation }) => {
 }, [posts, hiddenPosts, deletedPosts]);
 
 
+=======
+
+  const [profileImage, setProfileImage] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+>>>>>>> 9312a88 (마이페이지 화면 구현)
   const handleChoosePhoto = () => {
     setModalVisible(true);
   }
@@ -73,6 +86,18 @@ const MyPageScreen = ({ navigation }) => {
     setModalVisible(false);
   }
 
+<<<<<<< HEAD
+=======
+
+  // 게시물 데이터 (test용)
+  const posts = [
+    { id: '1', imageUrl: 'https://kidlingoo.com/wp-content/uploads/flowers_name_in_english-980x510.jpg.webp' },
+    { id: '2', imageUrl: 'https://kidlingoo.com/wp-content/uploads/flowers_name_in_english-980x510.jpg.webp' },
+    { id: '3', imageUrl: 'https://kidlingoo.com/wp-content/uploads/flowers_name_in_english-980x510.jpg.webp' },
+    // 필요에 따라 이미지 URL을 더 추가
+  ];
+
+>>>>>>> 9312a88 (마이페이지 화면 구현)
   // 게시물 이미지 렌더링 함수
   const renderPost = ({ item }) => (
     <View style={styles.postImageContainer}>
@@ -85,7 +110,11 @@ const MyPageScreen = ({ navigation }) => {
       <View style={styles.headerWrapper}>
         <View style={styles.header}>
           <Image source={require('../../assets/logo.png')} style={styles.logo}></Image>
+<<<<<<< HEAD
           <CalendarIcon onPress={() => navigation.navigate('Plan')} />
+=======
+          <CalendarIcon />
+>>>>>>> 9312a88 (마이페이지 화면 구현)
         </View>
         <View style={styles.profileSection}>
           <View style={styles.profileInfo}>
@@ -100,7 +129,11 @@ const MyPageScreen = ({ navigation }) => {
               containerStyle={styles.avatar}
             />
             <TouchableOpacity style={styles.editIconContainer} onPress={handleChoosePhoto}>
+<<<<<<< HEAD
               <EditIcon />
+=======
+              <EditIcon/>
+>>>>>>> 9312a88 (마이페이지 화면 구현)
             </TouchableOpacity>
           </View>
         </View>
@@ -115,8 +148,12 @@ const MyPageScreen = ({ navigation }) => {
       </View>
       <View style={styles.labelContainer}>
         <Text style={styles.label}>게시물</Text>
+<<<<<<< HEAD
         <MenuIcon onPress={() => navigation.navigate('ManagePost')}
         />
+=======
+        <MenuIcon onPress={() => navigation.navigate('ManagePost', { posts })}/>
+>>>>>>> 9312a88 (마이페이지 화면 구현)
       </View>
       <FlatList
         data={posts}
@@ -130,6 +167,7 @@ const MyPageScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.modalContainer} onPress={() => setModalVisible(false)}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>프로필 사진 설정</Text>
+<<<<<<< HEAD
             <View style={styles.separator} />
             <TouchableOpacity style={styles.modalButton} onPress={pickImageFromAlbum}>
               <Text style={styles.modalText}>앨범에서 사진 선택</Text>
@@ -139,6 +177,17 @@ const MyPageScreen = ({ navigation }) => {
               <Text style={styles.modalText}>사진 찍기</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
+=======
+            <View style={styles.separator}/>
+            <TouchableOpacity style={styles.modalButton} onPress={pickImageFromAlbum}>
+              <Text style={styles.modalText}>앨범에서 사진 선택</Text>
+            </TouchableOpacity>
+            <View style={styles.separator}/>
+            <TouchableOpacity style={styles.modalButton} onPress={takePhoto}>
+              <Text style={styles.modalText}>사진 찍기</Text>
+            </TouchableOpacity>
+            <View style={styles.separator}/>
+>>>>>>> 9312a88 (마이페이지 화면 구현)
             <TouchableOpacity style={styles.modalButton} onPress={defaultProfileImae}>
               <Text style={styles.modalText}>기본 이미지 적용</Text>
             </TouchableOpacity>
@@ -268,7 +317,11 @@ const styles = StyleSheet.create({
     color: '#222'
   },
   separator: {
+<<<<<<< HEAD
     width: '100%',
+=======
+    width: '90%',
+>>>>>>> 9312a88 (마이페이지 화면 구현)
     height: 1,
     backgroundColor: '#E0E0E0',
   },
