@@ -71,17 +71,83 @@ const HomeScreen = () => {
 
     // 친구 목록 (사용자 제외)
     const friends = [
-        {id: '1', name: '홍길동', status: '🚗 출근 중', profileImage: null, backgroundImage: null,},
-        {id: '2', name: '김영희', status: '🚗 출근 중', profileImage: null, backgroundImage: null,},
-        {id: '3', name: '이철수', status: '🚗 출근 중', profileImage: null, backgroundImage: null,},
-        {id: '4', name: '김반석', status: '🏠 휴식 중', profileImage: null, backgroundImage: null,},
-        {id: '5', name: '최진원', status: '🏠 휴식 중', profileImage: null, backgroundImage: null,},
-        {id: '6', name: '안성호', status: '🏠 휴식 중', profileImage: null, backgroundImage: null,},
-        {id: '7', name: '이라엘', status: '💟 데이트 중', profileImage: null, backgroundImage: null,},
-        {id: '8', name: '김정동', status: '💟 데이트 중', profileImage: null, backgroundImage: null,},
-        {id: '9', name: '김태경', status: '💟 데이트 중', profileImage: null, backgroundImage: null,},
-        {id: '10', name: '박소현', status: '⚽️ 운동 중', profileImage: null, backgroundImage: null,},
-        {id: '11', name: '이아현', status: '⚽️ 운동 중',profileImage: null, backgroundImage: null,},
+        {
+            id: '1', 
+            name: '홍길동', 
+            status: '🚗 출근 중', 
+            profileImage: null, 
+            backgroundImage: null,
+        },
+        {
+            id: '2', 
+            name: '김영희', 
+            status: '🚗 출근 중', 
+            profileImage: null, 
+            backgroundImage: null,
+        },
+        {
+            id: '3', 
+            name: '이철수', 
+            status: '🚗 출근 중', 
+            profileImage: null, 
+            backgroundImage: null,
+        },
+        {
+            id: '4', 
+            name: '김반석', 
+            status: '🏠 휴식 중', 
+            profileImage: require('../../assets/profile_default_3.png'), 
+            backgroundImage: require('../../assets/profile_background_default_2.png'),
+        },
+        {
+            id: '5', 
+            name: '최진원', 
+            status: '🏠 휴식 중', 
+            profileImage: require('../../assets/profile_default_3.png'), 
+            backgroundImage: require('../../assets/profile_background_default_2.png'),
+        },
+        {
+            id: '6', 
+            name: '안성호', 
+            status: '🏠 휴식 중', 
+            profileImage: require('../../assets/profile_default_3.png'), 
+            backgroundImage: require('../../assets/profile_background_default_2.png'),
+        },
+        {
+            id: '7', 
+            name: '이라엘', 
+            status: '💟 데이트 중', 
+            profileImage: require('../../assets/profile_default_4.png'), 
+            backgroundImage: require('../../assets/profile_background_default_3.png'),
+        },
+        {
+            id: '8', 
+            name: '김정동', 
+            status: '💟 데이트 중', 
+            profileImage: require('../../assets/profile_default_4.png'), 
+            backgroundImage: require('../../assets/profile_background_default_3.png'),
+        },
+        {
+            id: '9', 
+            name: '김태경', 
+            status: '💟 데이트 중', 
+            profileImage: require('../../assets/profile_default_4.png'), 
+            backgroundImage: require('../../assets/profile_background_default_3.png'),
+        },
+        {
+            id: '10', 
+            name: '박소현', 
+            status: '⚽️ 운동 중', 
+            profileImage: null, 
+            backgroundImage: null,
+        },
+        {
+            id: '11', 
+            name: '이아현', 
+            status: '⚽️ 운동 중',
+            profileImage: null, 
+            backgroundImage: null,
+        },
         
     ];
 
@@ -93,7 +159,7 @@ const HomeScreen = () => {
     const renderMe = () => (
         <TouchableOpacity style={styles.meContainer}>
             <Image
-                source={me.profileImage ? { uri: me.profileImage } : require('../../assets/profile_default.png')}
+                source={me.profileImage ? { uri: me.profileImage } : require('../../assets/profile_default_1.png')}
                 style={styles.meProfileImage}
             />
             <View style={styles.meInfo}>
@@ -106,7 +172,8 @@ const HomeScreen = () => {
     const renderFriendList = ({ item }) => (
         <TouchableOpacity style={styles.friendItem_list}>
             <Image
-                source={item.profileImage ? { uri: item.profileImage } : require('../../assets/profile_default.png')}
+                // source={item.profileImage ? { uri: item.profileImage } : require('../../assets/profile_default_2.png')}
+                source={item.profileImage ? item.profileImage : require('../../assets/profile_default_2.png')}
                 style={styles.profileImage}
             />
             <View style={styles.friendInfo}>
@@ -120,17 +187,15 @@ const HomeScreen = () => {
         <TouchableOpacity style={styles.card}>
             {/* Background Image */}
             <Image
-                source={item.backgroundImage ? { uri: item.backgroundImage } : require('../../assets/profile_background_default.png')}
+                // source={item.backgroundImage ? { uri: item.backgroundImage } : require('../../assets/profile_background_default_1.png')}
+                source={item.backgroundImage ? item.backgroundImage : require('../../assets/profile_background_default_1.png')}
                 style={styles.cardBackground}
             />
             {/* Overlay for Profile Info */}
             <View style={styles.infoBox}>
                 <Image
-                    source={
-                        item.profileImage
-                            ? { uri: item.profileImage }
-                            : require('../../assets/profile_default.png')
-                    }
+                    // source={item.profileImage ? { uri: item.profileImage } : require('../../assets/profile_default.png')}
+                    source={item.profileImage ? item.profileImage : require('../../assets/profile_default_2.png')}
                     style={[styles.profileImage, { width: 40, height: 40 }]}
                 />
                 <View style={styles.textContainer}>
